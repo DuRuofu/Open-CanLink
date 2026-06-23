@@ -26,9 +26,11 @@ def main():
     window = MainWindow(serial_manager, log_manager)
     window.show()
 
-    # 恢复上次的串口配置
+    # 恢复上次的串口配置 + 自动扫描串口列表
+    import serial.tools.list_ports
+    ports = [p.device for p in serial.tools.list_ports.comports()]
+    window.serial_panel.set_port_list(ports)
     window.serial_panel.restore_settings()
-    window.serial_panel.set_port_list([])  # 触发 refresh 但不覆盖已恢复的选项
 
     # 连接/断开时自动保存配置
     serial_manager.connected.connect(lambda: window.serial_panel.save_settings())

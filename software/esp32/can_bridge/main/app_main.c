@@ -80,6 +80,8 @@ static void can_rx_callback(uint32_t id, bool ext, uint8_t dlc,
     if (len > 0) {
         usb_cdc_write((const uint8_t *)json_line, (size_t)len);
     }
+
+    led_indicator_blip();
 }
 
 /* ---- Main bridge task: process USB -> protocol -> CAN ---- */
@@ -109,6 +111,7 @@ static void bridge_task(void *arg)
                     if (rlen > 0) {
                         usb_cdc_write((const uint8_t *)response, (size_t)rlen);
                     }
+                    led_indicator_blip();
                 } else {
                     /* Invalid JSON - send error */
                     int rlen = protocol_build_response(NULL, false,

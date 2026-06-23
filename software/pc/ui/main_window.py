@@ -23,6 +23,15 @@ class MainWindow(QWidget):
         self._setup_ui()
         self._connect_signals()
 
+    def closeEvent(self, event):
+        """窗口关闭时清理串口连接，避免 QThread 异常退出"""
+        if self._serial_manager.is_connected:
+            self._serial_manager.disconnect()
+        # 给线程一点时间完成清理
+        import time
+        time.sleep(0.05)
+        event.accept()
+
     def _setup_ui(self):
         self.setWindowTitle("esp-can-link")
         self.setGeometry(100, 100, 1200, 800)

@@ -11,6 +11,7 @@ from PySide6.QtCore import Qt, QTimer
 from PySide6.QtGui import QFont, QFontDatabase
 
 from core.can_protocol import LineBuffer, CanFrame, parse_message
+from datetime import datetime
 
 MAX_ROWS = 1000
 
@@ -119,9 +120,9 @@ class CanMonitorTab(QWidget):
         # Counter
         self._set_item(row, 0, str(self._frame_count))
 
-        # Timestamp
-        ts = frame.timestamp_ms
-        self._set_item(row, 1, f"{ts // 1000}.{ts % 1000:03d}")
+        # Timestamp (system time on arrival)
+        now = datetime.now()
+        self._set_item(row, 1, now.strftime("%H:%M:%S.%f")[:-3])
 
         # ID
         if self.chk_hex.isChecked():

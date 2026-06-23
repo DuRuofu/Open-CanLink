@@ -19,9 +19,9 @@ extern "C" {
 
 typedef enum {
     LED_STATE_OFF,
-    LED_STATE_READY,   /* CAN stopped, device idle */
-    LED_STATE_RUNNING, /* CAN running normally */
-    LED_STATE_ERROR,   /* CAN bus-off or error */
+    LED_STATE_READY,     /* CAN stopped, device idle (blue) */
+    LED_STATE_RUNNING,   /* CAN running normally (green) */
+    LED_STATE_ERROR,     /* CAN bus-off or error (red) */
 } led_state_t;
 
 /**
@@ -37,6 +37,12 @@ esp_err_t led_indicator_init(uint8_t gpio_num);
  * @return ESP_OK on success
  */
 esp_err_t led_indicator_set_state(led_state_t state);
+
+/**
+ * @brief Quick activity blink: off briefly then restore last state.
+ * Non-blocking — call from ISR callback or task context.
+ */
+void led_indicator_blip(void);
 
 /**
  * @brief Turn off the LED and release resources.

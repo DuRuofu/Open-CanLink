@@ -31,6 +31,7 @@ static const char *TAG = "led";
 static rmt_channel_handle_t s_chan = NULL;
 static rmt_encoder_handle_t s_encoder = NULL;
 static bool s_initialized = false;
+static led_state_t s_last_state = LED_STATE_OFF;
 
 /*
  * Build RMT symbols for one WS2812 pixel (RGB, 24 bits) + reset.
@@ -91,6 +92,8 @@ esp_err_t led_indicator_set_state(led_state_t state)
 {
     if (!s_initialized) return ESP_ERR_INVALID_STATE;
 
+    s_last_state = state;
+
     uint8_t r = 0, g = 0, b = 0;
     switch (state) {
     case LED_STATE_OFF:     r = 0;  g = 0;  b = 0;   break;
@@ -107,9 +110,30 @@ esp_err_t led_indicator_set_state(led_state_t state)
     esp_err_t ret = rmt_transmit(s_chan, s_encoder, symbols,
                                   sym_count * sizeof(rmt_symbol_word_t), &tx_conf);
     if (ret == ESP_OK) {
-        rmt_tx_wait_all_done(s_chan, 100);
+        rmt_tx_wait_all_done(s_chan, 5);
     }
     return ret;
+}
+
+void led_indicator_blip(void)
+{
+    if (!s_initialized) return;
+
+    /* Toggle: alternate between off and current state color on each call */
+    static bool s_toggle;
+    s_toggle = !s_toggle;
+
+    if (s_toggle) {
+        /* Off */
+        uint8_t off[3] = {0, 0, 0};
+        rmt_symbol_word_t sym[25];
+        int n = make_ws2812_symbols(off, sym);
+        rmt_transmit_config_t tx_cfg = { .loop_count = 0 };
+        rmt_transmit(s_chan, s_encoder, sym, n * sizeof(rmt_symbol_word_t), &tx_cfg);
+    } else {
+        /* Restore last state */
+        led_indicator_set_state(s_last_state);
+    }
 }
 
 esp_err_t led_indicator_deinit(void)

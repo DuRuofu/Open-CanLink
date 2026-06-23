@@ -26,7 +26,8 @@ class CanSendTab(QWidget):
 
     send_requested = Signal(str)
 
-    BITRATES = ["125000", "250000", "500000", "1000000"]
+    BITRATES = ["125K", "250K", "500K", "1M"]
+    BITRATE_VALUES = {"125K": 125000, "250K": 250000, "500K": 500000, "1M": 1000000}
 
     def __init__(self):
         super().__init__()
@@ -48,7 +49,7 @@ class CanSendTab(QWidget):
         ctrl_layout.addWidget(QLabel("波特率:"))
         self.combo_bitrate = QComboBox()
         self.combo_bitrate.addItems(self.BITRATES)
-        self.combo_bitrate.setCurrentText("500000")
+        self.combo_bitrate.setCurrentText("500K")
         ctrl_layout.addWidget(self.combo_bitrate)
 
         self.btn_set_bitrate = QPushButton("设置波特率")
@@ -320,6 +321,7 @@ class CanSendTab(QWidget):
 
         if active:
             self._active_periodic_ids.add(can_id)
+            self._send_json(build_periodic_start(can_id, ext, data[:dlc], period_ms))
 
         self._update_slot_usage()
 
@@ -470,7 +472,8 @@ class CanSendTab(QWidget):
     # ── Send ─────────────────────────────────────────────────
 
     def _on_set_bitrate(self):
-        bitrate = int(self.combo_bitrate.currentText())
+        label = self.combo_bitrate.currentText()
+        bitrate = self.BITRATE_VALUES.get(label, 500000)
         self._send_json(build_set_bitrate(bitrate))
 
     def _send_json(self, json_str: str):
