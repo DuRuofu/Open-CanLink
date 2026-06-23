@@ -61,12 +61,15 @@ typedef void (*can_rx_callback_t)(uint32_t id, bool ext, uint8_t dlc,
  * Configures the TWAI controller but does NOT start it.
  * Call can_driver_start() to begin bus participation.
  *
- * @param tx_pin   GPIO for CAN TX (connected to TJA1051 TXD)
- * @param rx_pin   GPIO for CAN RX (connected to TJA1051 RXD)
- * @param bitrate  Bitrate in bps (use can_bitrate_t values)
+ * @param tx_pin       GPIO for CAN TX (connected to TJA1051 TXD)
+ * @param rx_pin       GPIO for CAN RX (connected to TJA1051 RXD)
+ * @param bitrate      Bitrate in bps (use can_bitrate_t values)
+ * @param standby_pin  GPIO for TJA1051 S pin (LOW=normal, HIGH=standby).
+ *                     Pass GPIO_NUM_NC if not used.
  * @return ESP_OK on success
  */
-esp_err_t can_driver_init(gpio_num_t tx_pin, gpio_num_t rx_pin, uint32_t bitrate);
+esp_err_t can_driver_init(gpio_num_t tx_pin, gpio_num_t rx_pin, uint32_t bitrate,
+                           gpio_num_t standby_pin);
 
 /**
  * @brief Start the CAN driver (enter normal operating mode).

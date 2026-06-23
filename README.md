@@ -20,6 +20,7 @@
 ```
 ESP32-S3 CAN_TX (GPIO4)  →  TJA1051 TXD
 ESP32-S3 CAN_RX (GPIO5)  ←  TJA1051 RXD
+ESP32-S3 GPIO6           →  TJA1051 S   (LOW=正常, HIGH=静音)
 TJA1051 CANH/CANL        →  CAN 总线（需 120Ω 终端电阻）
 ```
 

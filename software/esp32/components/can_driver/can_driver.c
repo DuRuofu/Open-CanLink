@@ -25,6 +25,7 @@ static SemaphoreHandle_t s_tx_sem = NULL;
 static volatile bool s_needs_recovery = false;
 static gpio_num_t s_tx_pin = GPIO_NUM_4;
 static gpio_num_t s_rx_pin = GPIO_NUM_5;
+static gpio_num_t s_standby_pin = GPIO_NUM_NC;
 static uint32_t s_bitrate = 500000;
 
 /* RX callback */
@@ -92,12 +93,27 @@ static IRAM_ATTR bool twai_state_cb(twai_node_handle_t handle,
 
 /* ---- Public API ---- */
 
-esp_err_t can_driver_init(gpio_num_t tx_pin, gpio_num_t rx_pin, uint32_t bitrate)
+esp_err_t can_driver_init(gpio_num_t tx_pin, gpio_num_t rx_pin, uint32_t bitrate,
+                           gpio_num_t standby_pin)
 {
     /* Save configuration for potential reinit (e.g. set_bitrate) */
     s_tx_pin = tx_pin;
     s_rx_pin = rx_pin;
     s_bitrate = bitrate;
+    s_standby_pin = standby_pin;
+
+    /* Configure TJA1051 S pin: output, HIGH = standby (silent) on init */
+    if (s_standby_pin != GPIO_NUM_NC) {
+        gpio_config_t io_conf = {
+            .pin_bit_mask = (1ULL << s_standby_pin),
+            .mode = GPIO_MODE_OUTPUT,
+            .pull_up_en = GPIO_PULLUP_DISABLE,
+            .pull_down_en = GPIO_PULLDOWN_DISABLE,
+            .intr_type = GPIO_INTR_DISABLE,
+        };
+        gpio_config(&io_conf);
+        gpio_set_level(s_standby_pin, 1);  /* HIGH = standby (off bus) */
+    }
 
     if (s_node_handle != NULL) {
         ESP_LOGW(TAG, "Driver already initialized, cleaning up old node");
@@ -172,6 +188,12 @@ esp_err_t can_driver_start(void)
         twai_node_enable(s_node_handle),
         TAG, "Failed to enable TWAI node");
     s_is_running = true;
+
+    /* TJA1051 S pin LOW = normal mode (on bus) */
+    if (s_standby_pin != GPIO_NUM_NC) {
+        gpio_set_level(s_standby_pin, 0);
+    }
+
     ESP_LOGI(TAG, "CAN driver started");
     return ESP_OK;
 }
@@ -184,6 +206,12 @@ esp_err_t can_driver_stop(void)
     if (s_is_running) {
         twai_node_disable(s_node_handle);
         s_is_running = false;
+
+        /* TJA1051 S pin HIGH = standby (off bus) */
+        if (s_standby_pin != GPIO_NUM_NC) {
+            gpio_set_level(s_standby_pin, 1);
+        }
+
         ESP_LOGI(TAG, "CAN driver stopped");
     }
     return ESP_OK;
@@ -201,7 +229,7 @@ esp_err_t can_driver_set_bitrate(uint32_t bitrate)
     }
 
     /* Re-init with saved GPIO pins */
-    esp_err_t ret = can_driver_init(s_tx_pin, s_rx_pin, bitrate);
+    esp_err_t ret = can_driver_init(s_tx_pin, s_rx_pin, bitrate, s_standby_pin);
     if (ret != ESP_OK) {
         return ret;
     }

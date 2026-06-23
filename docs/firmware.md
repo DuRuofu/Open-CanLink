@@ -74,6 +74,7 @@ idf.py -p /dev/cu.usbmodem* flash monitor
 |------|------|------|
 | CAN TX | GPIO4 | → TJA1051 TXD |
 | CAN RX | GPIO5 | ← TJA1051 RXD |
+| CAN STB | GPIO6 | → TJA1051 S (LOW=正常, HIGH=静音) |
 | USB DP | GPIO20 | USB OTG (固定) |
 | USB DM | GPIO19 | USB OTG (固定) |
 

@@ -50,6 +50,7 @@ idf.py -p /dev/cu.usbmodem* flash monitor
 |------|------|
 | CAN TX | GPIO4 |
 | CAN RX | GPIO5 |
+| CAN STB | GPIO6 |
 | USB DP | GPIO20 |
 | USB DM | GPIO19 |
 

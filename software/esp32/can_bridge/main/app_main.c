@@ -22,8 +22,9 @@
 static const char *TAG = "bridge";
 
 /* Default CAN pins */
-#define CAN_TX_GPIO  GPIO_NUM_4
-#define CAN_RX_GPIO  GPIO_NUM_5
+#define CAN_TX_GPIO      GPIO_NUM_4
+#define CAN_RX_GPIO      GPIO_NUM_5
+#define CAN_STANDBY_GPIO GPIO_NUM_6   /* TJA1051 S pin, LOW=normal, HIGH=standby */
 
 /* ---- Forward declarations ---- */
 static void usb_rx_callback(const uint8_t *data, size_t len, void *user_ctx);
@@ -161,7 +162,7 @@ void app_main(void)
     ESP_LOGI(TAG, "=============================================");
     ESP_LOGI(TAG, "  esp-can-link Bridge Firmware v0.1.0");
     ESP_LOGI(TAG, "  HW: ESP32-S3 + TJA1051");
-    ESP_LOGI(TAG, "  CAN: TX=GPIO%d, RX=GPIO%d", CAN_TX_GPIO, CAN_RX_GPIO);
+    ESP_LOGI(TAG, "  CAN: TX=GPIO%d, RX=GPIO%d, S=GPIO%d", CAN_TX_GPIO, CAN_RX_GPIO, CAN_STANDBY_GPIO);
     ESP_LOGI(TAG, "=============================================");
 
     /* Initialize NVS */
@@ -173,7 +174,7 @@ void app_main(void)
     ESP_ERROR_CHECK(ret);
 
     /* Initialize CAN driver (stopped by default per spec) */
-    ESP_ERROR_CHECK(can_driver_init(CAN_TX_GPIO, CAN_RX_GPIO, 500000));
+    ESP_ERROR_CHECK(can_driver_init(CAN_TX_GPIO, CAN_RX_GPIO, 500000, CAN_STANDBY_GPIO));
     can_driver_set_rx_callback(can_rx_callback, NULL);
 
     /* Initialize USB CDC */
