@@ -21,10 +21,8 @@ software/esp32/
 ## 构建
 
 ```bash
-# 激活 ESP-IDF 环境
-get_idf60
+# 在 ESP-IDF 6.0 环境中，选择要构建的程序：
 
-# 选择要构建的程序，进入对应目录
 cd test/twai_loopback     # CAN 测试
 cd test/usb_cdc_echo      # USB 测试
 cd can_bridge             # 桥接程序

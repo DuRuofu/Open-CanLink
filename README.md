@@ -104,17 +104,19 @@ USB CDC 和 Wi-Fi 共用同一套 JSON 命令协议，详见 [docs/protocol.md](
 三个独立 ESP-IDF 项目，按顺序构建：
 
 ```bash
+# 在 ESP-IDF 6.0 环境中执行
+
 # 1. CAN 硬件测试
 cd software/esp32/test/twai_loopback
-get_idf60 && idf.py set-target esp32s3 && idf.py build
+idf.py set-target esp32s3 && idf.py build
 
 # 2. USB 串口测试
 cd software/esp32/test/usb_cdc_echo
-get_idf60 && idf.py set-target esp32s3 && idf.py build
+idf.py set-target esp32s3 && idf.py build
 
 # 3. 综合桥接程序
 cd software/esp32/can_bridge
-get_idf60 && idf.py set-target esp32s3 && idf.py build
+idf.py set-target esp32s3 && idf.py build
 ```
 
 详见 [docs/firmware.md](docs/firmware.md) 和 [docs/getting_started.md](docs/getting_started.md)。

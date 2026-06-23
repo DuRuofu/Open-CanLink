@@ -11,7 +11,7 @@
 
 ### 软件
 
-- ESP-IDF 6.0.1（通过 `get_idf60` 激活）
+- ESP-IDF 6.0.1
 - Python 3.12+（PC 上位机）
 - `uv` 包管理器
 
@@ -21,7 +21,6 @@
 
 ```bash
 cd software/esp32/test/twai_loopback
-get_idf60
 idf.py set-target esp32s3
 idf.py build
 idf.py -p /dev/cu.usbmodem* flash monitor
@@ -35,7 +34,6 @@ idf.py -p /dev/cu.usbmodem* flash monitor
 
 ```bash
 cd software/esp32/test/usb_cdc_echo
-get_idf60
 idf.py set-target esp32s3
 idf.py build
 idf.py -p /dev/cu.usbmodem* flash monitor
@@ -47,7 +45,6 @@ idf.py -p /dev/cu.usbmodem* flash monitor
 
 ```bash
 cd software/esp32/can_bridge
-get_idf60
 idf.py set-target esp32s3
 idf.py build
 idf.py -p /dev/cu.usbmodem* flash monitor

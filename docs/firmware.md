@@ -4,11 +4,6 @@
 
 ESP-IDF 6.0.1，目标芯片 ESP32-S3。
 
-```bash
-# 激活 ESP-IDF 环境
-get_idf60  # . /Users/duruofu/.espressif/tools/activate_idf_v6.0.1.sh
-```
-
 ## 固件架构
 
 ```
@@ -35,7 +30,6 @@ software/esp32/
 
 ```bash
 cd software/esp32/test/twai_loopback
-get_idf60
 idf.py set-target esp32s3   # 首次
 idf.py build
 idf.py -p /dev/cu.usbmodem* flash monitor
@@ -51,7 +45,6 @@ idf.py -p /dev/cu.usbmodem* flash monitor
 
 ```bash
 cd software/esp32/test/usb_cdc_echo
-get_idf60
 idf.py set-target esp32s3
 idf.py build
 idf.py -p /dev/cu.usbmodem* flash monitor
@@ -70,7 +63,6 @@ USB CDC ↔ CAN 桥接，实现完整 JSON 协议。
 
 ```bash
 cd software/esp32/can_bridge
-get_idf60
 idf.py set-target esp32s3
 idf.py build
 idf.py -p /dev/cu.usbmodem* flash monitor

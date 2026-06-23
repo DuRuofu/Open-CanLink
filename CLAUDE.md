@@ -16,7 +16,7 @@
 ### 常用命令
 
 ```bash
-get_idf60                          # 激活 ESP-IDF 6.0.1 环境
+# 在 ESP-IDF 6.0 环境中执行以下命令
 
 # ESP32 固件构建
 cd software/esp32/<project>
