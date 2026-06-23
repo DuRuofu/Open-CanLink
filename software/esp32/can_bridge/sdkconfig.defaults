@@ -1,0 +1,3 @@
+# esp-can-link bridge firmware - sdkconfig defaults
+CONFIG_TINYUSB_CDC_ENABLED=y
+CONFIG_TINYUSB_DESC_USE_ESPRESSIF_VID=y

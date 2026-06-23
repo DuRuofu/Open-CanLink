@@ -23,13 +23,20 @@
 
 ```
 esp-can-link/
-├── docs/              # 项目文档
-├── hanrdware/         # 硬件设计（原理图、PCB）
+├── docs/                     # 项目文档
+│   ├── protocol.md           # JSON 通信协议
+│   ├── firmware.md            # 固件开发指南
+│   ├── getting_started.md     # 快速上手
+│   └── pc_upper_computer.md   # PC 上位机指南
 ├── software/
-│   ├── esp32/         # ESP32-S3 固件（ESP-IDF 6.0）
-│   ├── pc/            # PC 上位机（PySide6）
-│   └── ref/           # 参考代码
-├── web/               # 网页调试界面
+│   ├── esp32/                # ESP32-S3 固件
+│   │   ├── components/       # 共享组件库
+│   │   ├── test/             # 硬件模块测试
+│   │   └── can_bridge/       # 综合桥接程序
+│   ├── pc/                   # PC 上位机（PySide6）
+│   └── ref/                  # 参考代码
+├── hardware/                 # 硬件设计
+├── web/                      # 网页调试界面
 ├── README.md
 └── CLAUDE.md
 ```
@@ -54,6 +61,17 @@ TJA1051T/3,118 CANH/CANL →  CAN 总线
 ```
 
 > GPIO 不能直连 CANH/CANL，必须通过 CAN 收发器。CAN 总线需要 120Ω 终端电阻。
+
+## 文档
+
+| 文档 | 说明 |
+|------|------|
+| [docs/protocol.md](docs/protocol.md) | JSON 通信协议规范 |
+| [docs/firmware.md](docs/firmware.md) | 固件开发指南 |
+| [docs/getting_started.md](docs/getting_started.md) | 快速上手指南 |
+| [docs/pc_upper_computer.md](docs/pc_upper_computer.md) | PC 上位机使用指南 |
+
+---
 
 ---
 
@@ -83,14 +101,23 @@ USB CDC 和 Wi-Fi 共用同一套 JSON 命令协议，详见 [docs/protocol.md](
 
 ## 固件开发
 
-ESP-IDF 6.0，目标芯片 ESP32-S3。
+三个独立 ESP-IDF 项目，按顺序构建：
 
 ```bash
-cd software/esp32
-idf.py set-target esp32s3
-idf.py build
-idf.py -p <PORT> flash monitor
+# 1. CAN 硬件测试
+cd software/esp32/test/twai_loopback
+get_idf60 && idf.py set-target esp32s3 && idf.py build
+
+# 2. USB 串口测试
+cd software/esp32/test/usb_cdc_echo
+get_idf60 && idf.py set-target esp32s3 && idf.py build
+
+# 3. 综合桥接程序
+cd software/esp32/can_bridge
+get_idf60 && idf.py set-target esp32s3 && idf.py build
 ```
+
+详见 [docs/firmware.md](docs/firmware.md) 和 [docs/getting_started.md](docs/getting_started.md)。
 
 ---
 

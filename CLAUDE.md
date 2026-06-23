@@ -16,13 +16,19 @@
 ### 常用命令
 
 ```bash
-idf.py set-target esp32s3          # 设定目标芯片
-idf.py menuconfig                  # 配置项目
+get_idf60                          # 激活 ESP-IDF 6.0.1 环境
+
+# ESP32 固件构建
+cd software/esp32/<project>
+idf.py set-target esp32s3          # 设定目标芯片（首次）
 idf.py build                       # 编译
 idf.py -p <PORT> flash monitor     # 烧录 + 串口监控
-idf.py -p <PORT> flash             # 仅烧录
 idf.py fullclean                   # 完全清理
-```
+
+# PC 上位机
+cd software/pc
+uv sync                            # 安装依赖
+uv run python main.py              # 启动
 
 ## 技术栈和关键依赖
 
@@ -68,39 +74,40 @@ idf.py fullclean                   # 完全清理
 esp-can-link/
 ├── CLAUDE.md                     # 本文件
 ├── README.md                     # 项目说明
-├── firmware/                     # ESP-IDF 固件工程
-│   ├── main/
-│   │   ├── CMakeLists.txt
-│   │   ├── app_main.c            # 入口
-│   │   ├── can_driver.c/h        # TWAI 驱动封装
-│   │   ├── usb_cdc.c/h           # USB CDC 通信
-│   │   ├── wifi_server.c/h       # Wi-Fi + WebSocket
-│   │   └── protocol.c/h          # JSON 命令协议解析
-│   ├── CMakeLists.txt
-│   └── sdkconfig.defaults
-├── hardware/                     # 硬件设计
-│   ├── schematic/
-│   ├── pcb/
-│   └── docs/
-├── web/                          # 网页调试界面
-│   ├── index.html
-│   ├── app.js
-│   └── style.css
-├── tools/                        # PC 端工具
-│   ├── python/
-│   └── test/
 ├── docs/                         # 文档
-│   ├── protocol.md
-│   ├── hardware.md
-│   └── roadmap.md
-└── software/ref/                 # 参考代码（不参与编译）
-    ├── usb/
-    │   ├── device/tusb_serial_device/  ← USB CDC 参考
-    │   └── device/cherryusb_serial_device/  ← 忽略
-    └── twai/
-        ├── twai_utils/           ← TWAI 命令交互参考
-        ├── twai_network/         ← CAN 收发参考
-        └── twai_error_recovery/  ← 错误恢复参考
+│   ├── protocol.md               # JSON 通信协议规范
+│   ├── firmware.md                # 固件开发指南
+│   ├── getting_started.md         # 快速上手指南
+│   └── pc_upper_computer.md       # PC 上位机使用指南
+├── software/
+│   ├── esp32/                    # ESP32-S3 固件
+│   │   ├── components/           # 共享 ESP-IDF 组件
+│   │   │   ├── can_driver/       # TWAI 驱动封装
+│   │   │   ├── usb_cdc/          # USB CDC ACM 封装
+│   │   │   └── protocol/         # JSON 协议解析器
+│   │   ├── test/                 # 硬件模块测试（独立项目）
+│   │   │   ├── twai_loopback/    # CAN 芯片接口测试
+│   │   │   └── usb_cdc_echo/     # USB 串口测试
+│   │   ├── can_bridge/           # 综合桥接程序（生产固件）
+│   │   ├── ref/                  # 参考代码（不参与编译）
+│   │   └── README.md
+│   ├── pc/                       # PC 上位机（PySide6）
+│   │   ├── core/
+│   │   │   ├── serial_manager.py   # 线程安全串口
+│   │   │   ├── log_manager.py      # 彩色日志
+│   │   │   └── can_protocol.py     # CAN 协议编解码
+│   │   └── ui/
+│   │       ├── main_window.py      # 主窗口
+│   │       └── tabs/
+│   │           ├── data_exchange_tab.py   # 通用数据收发
+│   │           ├── can_monitor_tab.py     # CAN 帧监视器
+│   │           └── can_send_tab.py        # CAN 帧发送
+│   └── ref/                      # ESP-IDF 参考示例
+│       ├── tusb_serial_device/
+│       └── twai/
+├── hardware/                     # 硬件设计（进行中）
+├── web/                          # 网页调试界面（进行中）
+└── tools/                        # 辅助工具
 ```
 
 ## 软件架构

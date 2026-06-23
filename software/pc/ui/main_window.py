@@ -8,7 +8,8 @@ from .serial_panel import SerialPanel
 from .log_panel import LogPanel
 from .tab_widget import TabWidget
 from .tabs.data_exchange_tab import DataExchangeTab
-from .tabs.placeholder_tab import PlaceholderTab
+from .tabs.can_monitor_tab import CanMonitorTab
+from .tabs.can_send_tab import CanSendTab
 
 
 class MainWindow(QWidget):
@@ -48,9 +49,10 @@ class MainWindow(QWidget):
         # 右侧标签页
         self.tab_widget = TabWidget()
         self.tab_widget.add_tab(DataExchangeTab(), "数据收发")
-        self.tab_widget.add_tab(PlaceholderTab(), "预留功能1")
-        self.tab_widget.add_tab(PlaceholderTab(), "预留功能2")
-        self.tab_widget.add_tab(PlaceholderTab(), "预留功能3")
+        self.can_monitor_tab = CanMonitorTab()
+        self.tab_widget.add_tab(self.can_monitor_tab, "CAN 监视器")
+        self.can_send_tab = CanSendTab()
+        self.tab_widget.add_tab(self.can_send_tab, "CAN 发送")
 
         # 添加到分割器
         splitter.addWidget(left_widget)
@@ -83,6 +85,9 @@ class MainWindow(QWidget):
         self.log_panel.btn_clear.clicked.connect(self._log_manager.clear)
         self.log_panel.btn_save.clicked.connect(self._on_save_log)
 
+        # CAN 发送信号
+        self.can_send_tab.send_requested.connect(self.send_data)
+
     def _on_refresh_ports(self):
         """刷新串口列表"""
         import serial.tools.list_ports
@@ -113,10 +118,11 @@ class MainWindow(QWidget):
         self._log_manager.error(msg)
 
     def _on_data_received(self, data):
-        # 通知当前活动的 tab
-        current = self.tab_widget.currentWidget()
-        if hasattr(current, 'on_data_received'):
-            current.on_data_received(data)
+        # 广播给所有 tab（CAN 监视器需要持续接收数据）
+        for i in range(self.tab_widget.count()):
+            widget = self.tab_widget.widget(i)
+            if hasattr(widget, 'on_data_received'):
+                widget.on_data_received(data)
 
     def _on_save_log(self):
         from PySide6.QtWidgets import QFileDialog

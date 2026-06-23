@@ -1,0 +1,2 @@
+# TWAI loopback test - sdkconfig defaults
+CONFIG_TWAI_ISR_IN_IRAM=y
