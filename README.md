@@ -4,6 +4,8 @@
 
 开放、可编程、低成本，替代封闭的厂商 USB-CAN 模块。通过 USB CDC 虚拟串口或 Wi-Fi 控制 CAN 总线，使用可读的 JSON 命令协议，无需专用上位机。
 
+![esp-can-link 系统全景](img.png)
+
 ---
 
 ## 硬件
