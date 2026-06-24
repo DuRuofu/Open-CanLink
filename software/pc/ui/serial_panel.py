@@ -33,7 +33,8 @@ class SerialPanel(QWidget):
         # 波特率选择
         grid.addWidget(QLabel("波特率:"), 1, 0)
         self.combo_baudrate = QComboBox()
-        self.combo_baudrate.addItems(["9600", "19200", "38400", "57600", "115200"])
+        self.combo_baudrate.addItems(["9600", "19200", "38400", "57600", "115200",
+                                       "230400", "460800", "921600"])
         self.combo_baudrate.setCurrentText("115200")
         self.combo_baudrate.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
         grid.addWidget(self.combo_baudrate, 1, 1, 1, 2)
