@@ -15,6 +15,12 @@ dist/
 venv/
 *.egg
 
+# ===== MounRiver Studio =====
+obj/
+*.d
+*.o
+DebugConfig/
+
 # ===== IDE =====
 .vscode/
 .idea/
