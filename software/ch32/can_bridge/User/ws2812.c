@@ -57,14 +57,14 @@ void ws2812_init(void)
     GPIO_Init(GPIOA, &gpio);
 
     /* SPI1: half-duplex TX-only master, CPOL=1 CPHA=1, 3MHz */
-    SPI_InitStructure.SPI_Direction = SPI_Direction_1Line_Tx;
-    SPI_InitStructure.SPI_Mode      = SPI_Mode_Master;
-    SPI_InitStructure.SPI_DataSize  = SPI_DataSize_8b;
-    SPI_InitStructure.SPI_CPOL      = SPI_CPOL_High;
-    SPI_InitStructure.SPI_CPHA      = SPI_CPHA_1Edge;
-    SPI_InitStructure.SPI_NSS       = SPI_NSS_Soft;
-    SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_32;
-    SPI_InitStructure.SPI_FirstBit  = SPI_FirstBit_MSB;
+    spi.SPI_Direction = SPI_Direction_1Line_Tx;
+    spi.SPI_Mode      = SPI_Mode_Master;
+    spi.SPI_DataSize  = SPI_DataSize_8b;
+    spi.SPI_CPOL      = SPI_CPOL_High;
+    spi.SPI_CPHA      = SPI_CPHA_1Edge;
+    spi.SPI_NSS       = SPI_NSS_Soft;
+    spi.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_32;
+    spi.SPI_FirstBit  = SPI_FirstBit_MSB;
     SPI_Init(SPI1, &spi);
     SPI_Cmd(SPI1, ENABLE);
 

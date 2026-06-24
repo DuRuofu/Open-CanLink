@@ -65,8 +65,6 @@ int main(void)
     ring_buffer_init(&g_usb_rx_ring);
 
     ws2812_init();
-    ws2812_set_color(WS2812_GREEN >> 16, (WS2812_GREEN >> 8) & 0xFF, WS2812_GREEN & 0xFF);
-    /* Wait — actually use the macro: ws2812_set_packed */
     ws2812_set_packed(WS2812_BLUE);
     ws2812_update();
 
